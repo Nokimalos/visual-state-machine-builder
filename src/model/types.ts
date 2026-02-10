@@ -22,7 +22,9 @@ export interface Transition {
   event: string;
 }
 
-export type OutputFormat = 'useReducer' | 'XState' | 'Zustand';
+export type OutputFormat = 'useReducer' | 'XState' | 'Zustand' | 'TanStack Query';
+
+export type OutputLanguage = 'ts' | 'js';
 
 export interface StateMachineModel {
   name: string;
@@ -30,6 +32,8 @@ export interface StateMachineModel {
   states: StateNode[];
   transitions: Transition[];
   outputFormat: OutputFormat;
+  /** Generated code language; default 'ts' */
+  outputLanguage?: OutputLanguage;
 }
 
 export interface ValidationError {

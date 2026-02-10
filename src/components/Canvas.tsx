@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import ReactFlow, {
   Background,
   Controls,
@@ -12,11 +13,11 @@ import ReactFlow, {
   type NodeChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { StateNode } from './StateNode';
+import { StateNode as StateNodeComponent } from './StateNode';
 import { EventNameModal } from './EventNameModal';
-import type { StateMachineModel } from '../model/types';
+import type { StateMachineModel, StateNode, Transition } from '../model/types';
 
-const nodeTypes: NodeTypes = { state: StateNode };
+const nodeTypes: NodeTypes = { state: StateNodeComponent };
 
 function defaultPosition(i: number) {
   return { x: 100 + (i % 3) * 220, y: 80 + Math.floor(i / 3) * 140 };
@@ -47,6 +48,11 @@ function modelToNodesAndEdges(model: StateMachineModel): { nodes: Node[]; edges:
   return { nodes, edges };
 }
 
+export interface CanvasApi {
+  selectAll: () => void;
+  duplicate: () => void;
+}
+
 export interface CanvasProps {
   model: StateMachineModel;
   onAddTransition: (fromStateId: string, toStateId: string, event: string) => void;
@@ -54,16 +60,20 @@ export interface CanvasProps {
   onRemoveTransition: (id: string) => void;
   onRemoveState: (id: string) => void;
   onStatePositionChange?: (stateId: string, position: { x: number; y: number }) => void;
+  canvasApiRef?: React.RefObject<CanvasApi | null>;
+  onDuplicate?: (states: StateNode[], transitions: Transition[]) => void;
 }
 
-export function Canvas({
+export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(function Canvas({
   model,
   onAddTransition,
-  onUpdateTransitionEvent,
+  onUpdateTransitionEvent: _onUpdateTransitionEvent,
   onRemoveTransition,
   onRemoveState,
   onStatePositionChange,
-}: CanvasProps) {
+  canvasApiRef,
+  onDuplicate,
+}, ref) {
   const { nodes: initialNodes, edges: initialEdges } = modelToNodesAndEdges(model);
   const [nodes, setNodes, onNodesChangeInternal] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -124,8 +134,51 @@ export function Canvas({
     setEdges(e);
   }, [model]);
 
+  const selectAll = useCallback(() => {
+    setNodes((n) => n.map((node) => ({ ...node, selected: true })));
+    setEdges((e) => e.map((edge) => ({ ...edge, selected: true })));
+  }, []);
+
+  const duplicate = useCallback(() => {
+    const selectedNodes = nodes.filter((n) => n.selected);
+    if (selectedNodes.length === 0 || !onDuplicate) return;
+    const oldToNew = new Map<string, string>();
+    selectedNodes.forEach((n) => oldToNew.set(n.id, uuidv4()));
+    const OFFSET = 60;
+    const newStates: StateNode[] = selectedNodes.map((n) => {
+      const state = model.states.find((s) => s.id === n.id);
+      const pos = n.position ?? { x: 0, y: 0 };
+      return {
+        id: oldToNew.get(n.id)!,
+        label: state?.label ?? n.data?.label ?? 'state',
+        type: state?.type ?? 'custom',
+        contextSchema: state?.contextSchema,
+        position: { x: pos.x + OFFSET, y: pos.y + OFFSET },
+      };
+    });
+    const selectedIds = new Set(selectedNodes.map((n) => n.id));
+    const newTransitions: Transition[] = edges
+      .filter((e) => selectedIds.has(e.source) && selectedIds.has(e.target))
+      .map((e) => {
+        const t = model.transitions.find((tr) => tr.id === e.id);
+        return {
+          id: uuidv4(),
+          fromStateId: oldToNew.get(e.source)!,
+          toStateId: oldToNew.get(e.target)!,
+          event: t?.event ?? 'EVENT',
+        };
+      });
+    onDuplicate(newStates, newTransitions);
+  }, [nodes, edges, model, onDuplicate]);
+
+  useImperativeHandle(
+    canvasApiRef,
+    () => ({ selectAll, duplicate }),
+    [selectAll, duplicate]
+  );
+
   return (
-    <div className="h-full w-full">
+    <div ref={ref} className="h-full w-full">
       <EventNameModal
         isOpen={pendingConnection !== null}
         onConfirm={handleEventConfirm}
@@ -150,4 +203,4 @@ export function Canvas({
       </ReactFlow>
     </div>
   );
-}
+});

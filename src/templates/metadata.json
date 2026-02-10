@@ -1,0 +1,86 @@
+{
+  "async-fetch": {
+    "title": "Async fetch",
+    "description": "idle → loading → success | error, with RETRY",
+    "tags": ["async", "data"],
+    "difficulty": "Beginner",
+    "useCases": "API calls, data fetching"
+  },
+  "list-with-empty": {
+    "title": "List with empty",
+    "description": "idle, loading, success (data), empty, error",
+    "tags": ["async", "list"],
+    "difficulty": "Beginner",
+    "useCases": "Lists that may be empty"
+  },
+  "form-submit": {
+    "title": "Form submit",
+    "description": "idle, submitting, success, error",
+    "tags": ["form"],
+    "difficulty": "Beginner",
+    "useCases": "Form submission flows"
+  },
+  "pagination": {
+    "title": "Pagination",
+    "description": "idle, loading, success, error; PREV_PAGE, NEXT_PAGE",
+    "tags": ["async", "data", "pagination"],
+    "difficulty": "Intermediate",
+    "useCases": "Paginated lists"
+  },
+  "auth-flow": {
+    "title": "Authentication flow",
+    "description": "loggedOut, loggingIn, loggedIn, sessionExpired",
+    "tags": ["auth"],
+    "difficulty": "Intermediate",
+    "useCases": "Login, session management"
+  },
+  "multi-step-form": {
+    "title": "Multi-step form",
+    "description": "step1 → step2 → step3, submitting, success, error",
+    "tags": ["form", "wizard"],
+    "difficulty": "Intermediate",
+    "useCases": "Wizards, multi-step flows"
+  },
+  "websocket": {
+    "title": "WebSocket connection",
+    "description": "disconnected, connecting, connected, reconnecting",
+    "tags": ["realtime", "websocket"],
+    "difficulty": "Intermediate",
+    "useCases": "Real-time connections"
+  },
+  "file-upload": {
+    "title": "File upload with progress",
+    "description": "idle, uploading, progress, success, error",
+    "tags": ["async", "upload"],
+    "difficulty": "Intermediate",
+    "useCases": "File upload with progress UI"
+  },
+  "infinite-scroll": {
+    "title": "Infinite scroll",
+    "description": "idle, loading, success, loadingMore, error",
+    "tags": ["async", "list"],
+    "difficulty": "Intermediate",
+    "useCases": "Infinite scroll feeds"
+  },
+  "optimistic-updates": {
+    "title": "Optimistic updates",
+    "description": "idle, updating, success, rollback, error",
+    "tags": ["async", "optimistic"],
+    "difficulty": "Advanced",
+    "useCases": "Optimistic UI updates"
+  },
+  "shopping-cart": {
+    "title": "Shopping cart",
+    "description": "empty, loading, ready, updating, checkout",
+    "tags": ["cart", "ecommerce"],
+    "difficulty": "Intermediate",
+    "useCases": "Cart and checkout flows"
+  },
+  "video-player": {
+    "title": "Video player states",
+    "description": "idle, loading, playing, paused, ended, error",
+    "tags": ["media", "player"],
+    "difficulty": "Beginner",
+    "useCases": "Video or audio players"
+  }
+}

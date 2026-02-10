@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 240 10% 4%;
+  --foreground: 0 0% 98%;
+  --card: 240 6% 10%;
+  --border: 240 4% 16%;
+  --muted: 240 4% 46%;
+  --muted-foreground: 240 5% 65%;
+  --accent: 263 70% 58%;
+  --accent-foreground: 0 0% 100%;
+  --ring: 263 70% 58%;
+  --success: 142 71% 45%;
+  --destructive: 0 84% 60%;
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* React Flow overrides to match theme */
+.react-flow__node.selected .react-flow__node-default,
+.react-flow__edge-path {
+  stroke: hsl(var(--accent));
+}
+
+/* Controls (zoom in/out, fit view, lock) – high visibility on dark background */
+.react-flow__controls {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.react-flow__controls-button {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  color: hsl(var(--foreground)) !important;
+  width: 32px !important;
+  height: 32px !important;
+  fill: hsl(var(--foreground)) !important;
+}
+.react-flow__controls-button:hover {
+  background: hsl(var(--border)) !important;
+  color: hsl(var(--accent)) !important;
+  fill: hsl(var(--accent)) !important;
+}
+.react-flow__controls-button svg {
+  max-width: 16px;
+  max-height: 16px;
+}
+
+.react-flow__minimap {
+  background: hsl(var(--card)) !important;
+  border-radius: 8px;
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
